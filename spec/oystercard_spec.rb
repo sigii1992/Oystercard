@@ -37,8 +37,12 @@ describe Oystercard do
 
   describe '#touch in' do
    it 'will change in journey status to true' do
-    card = Oystercard.new
+    card.top_up 1
     expect(card.touch_in).to eq true
+   end
+
+   it 'will raise an error if insufficient amount' do
+    expect { card.touch_in }.to raise_error "Insufficient amount"
    end
   end
 
@@ -48,4 +52,5 @@ describe Oystercard do
      expect(card.touch_out).to eq false
     end
   end
+
 end
