@@ -1,7 +1,8 @@
 require 'oystercard'
 
 describe Oystercard do
-  let(:card) { Oystercard.new }
+  let (:card) { Oystercard.new }
+  let (:station) { double :station }
 
   it 'has a balance of zero' do
     expect(card.balance).to eq 0
@@ -36,25 +37,32 @@ describe Oystercard do
   end
 
   describe '#touch in' do
-   it 'will change in journey status to true' do
-    card.top_up 1
-    expect(card.touch_in).to eq true
-   end
+  #  it 'will change in journey status to true' do
+  #   card.top_up 1
+  #   expect(card.touch_in(station)).to eq true
+  #  end
 
    it 'will raise an error if insufficient amount' do
     card = Oystercard.new
-    expect { card.touch_in }.to raise_error "Insufficient amount"
+    expect { card.touch_in(station) }.to raise_error "Insufficient amount"
+   end
+
+   it 'records entry station' do
+    card.top_up 5
+    card.touch_in(station)
+    expect(card.entry_station).to eq station
    end
   end
 
   describe '#touch out' do
-    it 'will change in journey status to false' do
-     card = Oystercard.new
-     expect(card.touch_out).to eq false
-    end
+    # it 'will change in journey status to false' do
+    #  card = Oystercard.new
+    #  expect(card.touch_out).to eq false
+    # end
+
      it 'deduct fare from balance' do
       card.top_up 5
-      card.touch_in
+      card.touch_in(station)
       expect { card.touch_out }.to change { card.balance }.by(-Oystercard::FARE)
     end
   end
