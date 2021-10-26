@@ -20,14 +20,14 @@ describe Oystercard do
     end
   end
 
-  describe '#deduct' do
-    it { is_expected.to respond_to(:deduct).with(1).argument }
+  # describe '#deduct' do
+  #   it { is_expected.to respond_to(:deduct)}
 
-    it 'will deduct £1 from the balance' do
-      card.top_up 5
-      expect { card.deduct 1}.to change { card.balance }.by -1
-    end
-  end
+  #   it 'will deduct £1 from the balance' do
+  #     card.top_up 5
+  #     expect { card.deduct 1}.to change { card.balance }.by -1
+  #   end
+  # end
 
   describe '# in journey' do
     it 'is initially not in a journey' do
@@ -42,6 +42,7 @@ describe Oystercard do
    end
 
    it 'will raise an error if insufficient amount' do
+    card = Oystercard.new
     expect { card.touch_in }.to raise_error "Insufficient amount"
    end
   end
@@ -51,6 +52,10 @@ describe Oystercard do
      card = Oystercard.new
      expect(card.touch_out).to eq false
     end
+     it 'deduct fare from balance' do
+      card.top_up 5
+      card.touch_in
+      expect { card.touch_out }.to change { card.balance }.by(-Oystercard::FARE)
+    end
   end
-
 end
