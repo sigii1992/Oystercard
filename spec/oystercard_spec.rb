@@ -19,4 +19,15 @@ describe Oystercard do
       expect { card.top_up 1 }.to raise_error "The limit is #{Oystercard::CARD_LIMIT}, can not add more money on your oystercard!"
     end
   end
+
+  describe '#deduct' do
+    it { is_expected.to respond_to(:deduct).with(1).argument }
+
+    it 'will deduct £1 from the balance' do
+      card.top_up 5
+      expect { card.deduct 1}.to change { card.balance }.by -1
+    end
+  end
+
+
 end
