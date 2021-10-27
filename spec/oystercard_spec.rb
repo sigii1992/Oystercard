@@ -8,6 +8,10 @@ describe Oystercard do
     expect(card.balance).to eq 0
   end
 
+  it 'expects journeys list to be empty' do
+    expect(card.journeys).to be_empty
+  end
+
   describe '#top_up' do
     it { is_expected.to respond_to(:top_up).with(1).argument }
 
@@ -21,15 +25,6 @@ describe Oystercard do
     end
   end
 
-  # describe '#deduct' do
-  #   it { is_expected.to respond_to(:deduct)}
-
-  #   it 'will deduct £1 from the balance' do
-  #     card.top_up 5
-  #     expect { card.deduct 1}.to change { card.balance }.by -1
-  #   end
-  # end
-
   describe '#in_journey' do
     it 'is initially not in a journey' do
       expect(subject).not_to be_in_journey
@@ -37,39 +32,36 @@ describe Oystercard do
   end
 
   describe '#touch in' do
-  #  it 'will change in journey status to true' do
-  #   card.top_up 1
-  #   expect(card.touch_in(station)).to eq true
-  #  end
-
    it 'will raise an error if insufficient amount' do
     expect { card.touch_in(station) }.to raise_error "Insufficient amount"
    end
 
-   it 'records entry station' do
+   it 'saves entry station to journeys hash' do
     card.top_up 5
     card.touch_in(station)
-    expect(card.entry_station).to eq station
+    expect(card.journeys).to include "entry_station" => station
    end
   end
 
   describe '#touch out' do
-    # it 'will change in journey status to false' do
-    #  card = Oystercard.new
-    #  expect(card.touch_out).to eq false
-    # end
-
      it 'deduct fare from balance' do
       card.top_up 5
       card.touch_in(station)
-      expect { card.touch_out }.to change { card.balance }.by(-Oystercard::FARE)
+      expect { card.touch_out(station) }.to change { card.balance }.by(-Oystercard::FARE)
     end
 
-    it 'changes recorded station to nil' do
+    it 'saves exit station to journeys hash' do
       card.top_up 5
       card.touch_in(station)
-      card.touch_out
-      expect(card.entry_station).to eq nil
-    end
+      card.touch_out(station)
+      expect(card.journeys).to include "exit_station" => station
+     end
   end
+  
+    it "creates one journey after touching in and out" do
+      card.top_up 5
+      card.touch_in(station)
+      card.touch_out(station)
+      expect(card.journeys).to include("entry_station" => station, "exit_station" => station) 
+    end
 end
