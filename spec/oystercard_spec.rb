@@ -30,7 +30,7 @@ describe Oystercard do
   #   end
   # end
 
-  describe '# in journey' do
+  describe '#in_journey' do
     it 'is initially not in a journey' do
       expect(subject).not_to be_in_journey
     end
@@ -43,7 +43,6 @@ describe Oystercard do
   #  end
 
    it 'will raise an error if insufficient amount' do
-    card = Oystercard.new
     expect { card.touch_in(station) }.to raise_error "Insufficient amount"
    end
 
@@ -64,6 +63,13 @@ describe Oystercard do
       card.top_up 5
       card.touch_in(station)
       expect { card.touch_out }.to change { card.balance }.by(-Oystercard::FARE)
+    end
+
+    it 'changes recorded station to nil' do
+      card.top_up 5
+      card.touch_in(station)
+      card.touch_out
+      expect(card.entry_station).to eq nil
     end
   end
 end
