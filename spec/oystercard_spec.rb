@@ -44,6 +44,8 @@ describe Oystercard do
    end
   end
 
+  
+
   describe '#touch out' do
      it 'deduct fare from balance' do
       card.top_up 5

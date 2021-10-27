@@ -30,6 +30,7 @@ class Oystercard
     !!@entry_station
   end
 
+
   private
 
   def exceeds_limit?(amount)
