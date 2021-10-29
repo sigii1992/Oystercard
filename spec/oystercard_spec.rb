@@ -2,7 +2,7 @@ require 'oystercard'
 
 describe Oystercard do
   let(:card) { Oystercard.new }
-  let(:station) { double :station }
+  let(:station) { double("station", :name => "Piccadilli", :zone => 1) }
   let(:journey) { {entry_station: station, exit_station: station} }
 
   it 'has a balance of zero' do
@@ -34,36 +34,34 @@ describe Oystercard do
 
   describe '#touch in' do
    it 'will raise an error if insufficient amount' do
-    expect { card.touch_in(station) }.to raise_error "Insufficient amount"
+    expect { card.touch_in(station, station) }.to raise_error "Insufficient amount"
    end
 
    it 'saves entry station' do
     card.top_up 5
-    card.touch_in(station)
-    expect(card.entry_station).to eq station
+    a = card.touch_in(station, station)
+    expect(card.entry_station).to eq a
    end
   end
-
-  
 
   describe '#touch out' do
      it 'deduct fare from balance' do
       card.top_up 5
-      card.touch_in(station)
-      expect { card.touch_out(station) }.to change { card.balance }.by(-Oystercard::FARE)
+      card.touch_in(station, station)
+      expect { card.touch_out(station, station) }.to change { card.balance }.by(-Oystercard::FARE)
     end
   
     it 'changes recorded entry station to nil' do
       card.top_up 5
-      card.touch_in(station)
-      card.touch_out(station)
+      card.touch_in(station, station)
+      card.touch_out(station, station)
       expect(card.entry_station).to eq nil
     end
 
     it "creates one journey after touching in and out" do
       card.top_up 5
-      card.touch_in(:station)
-      card.touch_out(:station)
+      card.touch_in(station, station)
+      card.touch_out(station, station)
       expect(card.journeys).to include {journey}
     end
   end

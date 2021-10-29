@@ -6,10 +6,11 @@ class Oystercard
   MINIMUM_BALANCE = 1
   FARE = 1
 
-  def initialize
+  def initialize(station = Station)
     @balance = 0
     @journeys = []
     @entry_station
+    @station = station
   end
 
   def top_up(amount)
@@ -17,14 +18,15 @@ class Oystercard
     @balance += amount 
   end
   
-  def touch_in(station)
+  def touch_in(name, zone)
     fail "Insufficient amount" if balance < MINIMUM_BALANCE
-    @entry_station = station
+    @entry_station = @station.new(name, zone)
   end
 
-  def touch_out(station)
+  def touch_out(name, zone)
     deduct(FARE)
-    @journeys << { :entry_station => @entry_station, :exit_station => station }
+    @journeys << { :entry_station => @entry_station, :exit_tation => @station.new(name, zone) }
+    # @journeys << { :entry_station => @entry_station, :exit_station => station }
     @entry_station = nil
   end
 
