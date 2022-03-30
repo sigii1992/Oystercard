@@ -25,7 +25,7 @@ class Oystercard
 
   def touch_out(name, zone)
     deduct(FARE)
-    @journeys << { :entry_station => @entry_station, :exit_tation => @station.new(name, zone) }
+    @journeys << { :entry_station => @entry_station, :exit_station => @station.new(name, zone) }
     # @journeys << { :entry_station => @entry_station, :exit_station => station }
     @entry_station = nil
   end
